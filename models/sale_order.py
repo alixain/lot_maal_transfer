@@ -17,6 +17,21 @@ class SaleOrder(models.Model):
                 ('sale_order_id', '=', order.id),
             ])
 
+    def action_open_lot_maal_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('New Lot Maal Transfer'),
+            'res_model': 'lot.maal.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_model': 'sale.order',
+                'active_id': self.id,
+                'default_sale_order_id': self.id,
+            },
+        }
+
     def action_view_lot_maal_transfers(self):
         self.ensure_one()
         return {

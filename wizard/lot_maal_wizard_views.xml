@@ -31,7 +31,7 @@
                         </group>
                         <group string="Source Configuration">
                             <field name="location_id" string="Source Location"/>
-                            <field name="sale_order_id" readonly="1" invisible="not sale_order_id"/>
+                            <field name="sale_order_id" readonly="1" attrs="{'invisible': [('sale_order_id', '=', False)]}"/>
                         </group>
                     </group>
 
@@ -43,8 +43,7 @@
                                       decoration-warning="current_stock &lt; qty"
                                       decoration-danger="current_stock &lt; 0">
                                     <field name="product_id"
-                                           options="{'no_create': False}"
-                                           attrs="{'required': [('id', '!=', False)]}"/>
+                                           options="{'no_create': False}"/>
                                     <field name="product_uom_id" optional="show"/>
                                     <field name="current_stock"
                                            string="On Hand"

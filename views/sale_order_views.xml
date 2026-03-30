@@ -11,13 +11,12 @@
         <field name="arch" type="xml">
             <!-- Add the Lot Maal button in the header, before the status bar -->
             <xpath expr="//header/button[last()]" position="after">
-                <button name="%(lot_maal_transfer.action_lot_maal_wizard)d"
-                        string="🏷️ Lot Maal"
-                        type="action"
+                <button name="action_open_lot_maal_wizard"
+                        string="Lot Maal"
+                        type="object"
                         class="btn-warning"
-                        context="{'active_model': 'sale.order', 'active_id': id}"
-                        title="Initiate a Lot Maal transfer: move cut pieces to an LM product"
                         attrs="{'invisible': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                        title="Initiate a Lot Maal transfer: move cut pieces to an LM product"
                 />
             </xpath>
         </field>
