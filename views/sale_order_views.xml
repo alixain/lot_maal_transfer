@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  Sale Order Form — Add "Lot Maal" Button in Header           -->
+    <!-- ============================================================ -->
+    <record id="view_sale_order_form_inherit_lot_maal" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.lot.maal</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add the Lot Maal button in the header, before the status bar -->
+            <xpath expr="//header/button[last()]" position="after">
+                <button name="%(lot_maal_transfer.action_lot_maal_wizard)d"
+                        string="🏷️ Lot Maal"
+                        type="action"
+                        class="btn-warning"
+                        context="{'active_model': 'sale.order', 'active_id': id}"
+                        title="Initiate a Lot Maal transfer: move cut pieces to an LM product"
+                        attrs="{'invisible': [('state', 'not in', ['draft', 'sent', 'sale'])]}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  Sale Order Quotation Form — Stat Button for LM Transfers    -->
+    <!-- ============================================================ -->
+    <record id="view_sale_order_form_lm_stat_button" model="ir.ui.view">
+        <field name="name">sale.order.form.lm.stat.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add LM transfer count stat button in the oe_button_box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object"
+                        name="action_view_lot_maal_transfers"
+                        class="oe_stat_button"
+                        icon="fa-tags"
+                        attrs="{'invisible': [('lot_maal_count', '=', 0)]}">
+                    <field name="lot_maal_count" widget="statinfo" string="LM Transfers"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

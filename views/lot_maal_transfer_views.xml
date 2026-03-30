@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  Lot Maal Transfer — TREE VIEW                               -->
+    <!-- ============================================================ -->
+    <record id="view_lot_maal_transfer_tree" model="ir.ui.view">
+        <field name="name">lot.maal.transfer.tree</field>
+        <field name="model">lot.maal.transfer</field>
+        <field name="arch" type="xml">
+            <tree string="Lot Maal Transfers"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="create_date" string="Date"/>
+                <field name="lm_product_id"/>
+                <field name="location_id" optional="show"/>
+                <field name="dest_location_id" optional="show"/>
+                <field name="total_qty" sum="Total"/>
+                <field name="lm_product_uom_id" optional="show"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="picking_count" string="Transfers" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'draft'"
+                       decoration-danger="state == 'cancelled'"
+                />
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  Lot Maal Transfer — FORM VIEW                               -->
+    <!-- ============================================================ -->
+    <record id="view_lot_maal_transfer_form" model="ir.ui.view">
+        <field name="name">lot.maal.transfer.form</field>
+        <field name="model">lot.maal.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Lot Maal Transfer">
+                <header>
+                    <button name="action_confirm"
+                            string="Confirm Transfer"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            confirm="This will immediately transfer inventory and may result in negative stock on source products. Proceed?"
+                    />
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            attrs="{'invisible': [('state', 'not in', ['draft'])]}"
+                    />
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            attrs="{'invisible': [('state', '!=', 'cancelled')]}"
+                    />
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_pickings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                attrs="{'invisible': [('picking_count', '=', 0)]}">
+                            <field name="picking_count" widget="statinfo" string="Transfers"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="LM Destination">
+                            <field name="lm_product_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field name="lm_product_uom_id" string="Unit of Measure"/>
+                            <field name="dest_location_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                        </group>
+                        <group string="Transfer Info">
+                            <field name="location_id"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            />
+                            <field name="total_qty" string="Total Qty Transferred"/>
+                            <field name="sale_order_id" readonly="1"
+                                   attrs="{'invisible': [('sale_order_id', '=', False)]}"
+                            />
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Source Products" name="lines">
+                            <field name="line_ids"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                   nolabel="1">
+                                <tree editable="bottom"
+                                      string="Source Products"
+                                      decoration-warning="current_stock &lt; qty"
+                                      decoration-danger="current_stock &lt; 0">
+                                    <field name="product_id"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="current_stock"
+                                           string="On Hand"
+                                           readonly="1"
+                                           optional="show"
+                                           widget="float"
+                                           digits="[12,3]"
+                                    />
+                                    <field name="qty"
+                                           string="Qty Transferred"
+                                           sum="Total Qty"
+                                    />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  Lot Maal Transfer — SEARCH VIEW                             -->
+    <!-- ============================================================ -->
+    <record id="view_lot_maal_transfer_search" model="ir.ui.view">
+        <field name="name">lot.maal.transfer.search</field>
+        <field name="model">lot.maal.transfer</field>
+        <field name="arch" type="xml">
+            <search string="Lot Maal Transfers">
+                <field name="name" string="Reference"/>
+                <field name="lm_product_id" string="LM Product"/>
+                <field name="sale_order_id" string="Quotation"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="filter_done" string="Done" domain="[('state','=','done')]"/>
+                <filter name="filter_cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_lm_product" string="LM Product"
+                            context="{'group_by': 'lm_product_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  Window Action — List of all LM Transfers                    -->
+    <!-- ============================================================ -->
+    <record id="action_lot_maal_transfer_list" model="ir.actions.act_window">
+        <field name="name">Lot Maal Transfers</field>
+        <field name="res_model">lot.maal.transfer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_lot_maal_transfer_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Lot Maal transfers yet!
+            </p>
+            <p>
+                Click <strong>New LM Transfer</strong> to initiate the first Lot Maal transfer,
+                or open a quotation and click the <strong>Lot Maal</strong> button.
+            </p>
+        </field>
+    </record>
+
+</odoo>

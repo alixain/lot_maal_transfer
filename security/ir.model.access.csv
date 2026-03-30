@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lot_maal_transfer_user,lot.maal.transfer user,model_lot_maal_transfer,stock.group_stock_user,1,1,1,0
+access_lot_maal_transfer_manager,lot.maal.transfer manager,model_lot_maal_transfer,stock.group_stock_manager,1,1,1,1
+access_lot_maal_transfer_line_user,lot.maal.transfer.line user,model_lot_maal_transfer_line,stock.group_stock_user,1,1,1,0
+access_lot_maal_transfer_line_manager,lot.maal.transfer.line manager,model_lot_maal_transfer_line,stock.group_stock_manager,1,1,1,1
+access_lot_maal_wizard_user,lot.maal.wizard user,model_lot_maal_wizard,stock.group_stock_user,1,1,1,1
+access_lot_maal_wizard_line_user,lot.maal.wizard.line user,model_lot_maal_wizard_line,stock.group_stock_user,1,1,1,1

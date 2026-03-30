@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for Lot Maal Transfer references: LM/2024/00001 -->
+        <record id="sequence_lot_maal_transfer" model="ir.sequence">
+            <field name="name">Lot Maal Transfer</field>
+            <field name="code">lot.maal.transfer</field>
+            <field name="prefix">LM/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

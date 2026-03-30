@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  Lot Maal Wizard Form (Popup)                                -->
+    <!-- ============================================================ -->
+    <record id="view_lot_maal_wizard_form" model="ir.ui.view">
+        <field name="name">lot.maal.wizard.form</field>
+        <field name="model">lot.maal.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Initiate Lot Maal Transfer">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <span class="text-muted">Lot Maal (LM) Transfer</span>
+                        </h1>
+                        <p class="text-muted o_form_label_optional_columns">
+                            Transfer cut pieces from multiple products into the selected LM product inventory.
+                            <strong>Negative stock is allowed</strong> — transfers proceed regardless of current balance.
+                        </p>
+                    </div>
+
+                    <group>
+                        <group string="Destination (LM Product)">
+                            <field name="lm_product_id"
+                                   options="{'no_create': False}"
+                                   placeholder="Select the Lot Maal product..."
+                                   widget="many2one"
+                            />
+                            <field name="dest_location_id" string="Destination Location"/>
+                        </group>
+                        <group string="Source Configuration">
+                            <field name="location_id" string="Source Location"/>
+                            <field name="sale_order_id" readonly="1" invisible="not sale_order_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Source Products" name="lines">
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom"
+                                      string="Source Products"
+                                      decoration-warning="current_stock &lt; qty"
+                                      decoration-danger="current_stock &lt; 0">
+                                    <field name="product_id"
+                                           options="{'no_create': False}"
+                                           attrs="{'required': [('id', '!=', False)]}"/>
+                                    <field name="product_uom_id" optional="show"/>
+                                    <field name="current_stock"
+                                           string="On Hand"
+                                           readonly="1"
+                                           optional="show"
+                                           widget="float"
+                                           digits="[12,3]"
+                                    />
+                                    <field name="qty"
+                                           string="Qty to Transfer"
+                                           sum="Total Qty"
+                                    />
+                                </tree>
+                            </field>
+                            <div class="alert alert-info mt-2" role="alert" style="font-size:12px;">
+                                <i class="fa fa-info-circle"/> Lines highlighted in
+                                <strong style="color:#856404;">orange</strong> will go below zero stock;
+                                <strong style="color:#721c24;">red</strong> means already negative.
+                                Both are allowed — this is the Lot Maal (LM) process.
+                            </div>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Optional remarks about this LM transfer..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <footer>
+                    <button name="action_confirm"
+                            string="✓  Confirm &amp; Transfer"
+                            type="object"
+                            class="btn-primary"
+                            confirm="This will immediately transfer inventory and may result in negative stock for source products. Proceed?"
+                    />
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard as a popup dialog -->
+    <record id="action_lot_maal_wizard" model="ir.actions.act_window">
+        <field name="name">New Lot Maal Transfer</field>
+        <field name="res_model">lot.maal.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_lot_maal_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

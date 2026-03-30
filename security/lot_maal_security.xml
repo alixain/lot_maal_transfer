@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+
+        <!-- Lot Maal Manager group (optional, for restricting access) -->
+        <record id="group_lot_maal_user" model="res.groups">
+            <field name="name">Lot Maal User</field>
+            <field name="category_id" ref="base.module_category_inventory"/>
+            <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+        </record>
+
+    </data>
+
+</odoo>

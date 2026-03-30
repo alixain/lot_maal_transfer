@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  Inventory Menu: Lot Maal                                    -->
+    <!-- ============================================================ -->
+
+    <!-- Top-level Lot Maal menu under Inventory -->
+    <menuitem id="menu_lot_maal_root"
+              name="Lot Maal"
+              parent="stock.menu_stock_root"
+              sequence="25"
+              groups="stock.group_stock_user"
+    />
+
+    <!-- Submenu: View all LM Transfers -->
+    <menuitem id="menu_lot_maal_transfers"
+              name="LM Transfers"
+              parent="menu_lot_maal_root"
+              action="action_lot_maal_transfer_list"
+              sequence="10"
+              groups="stock.group_stock_user"
+    />
+
+    <!-- Submenu: New LM Transfer (opens wizard popup) -->
+    <menuitem id="menu_lot_maal_new"
+              name="New LM Transfer"
+              parent="menu_lot_maal_root"
+              action="action_lot_maal_wizard"
+              sequence="5"
+              groups="stock.group_stock_user"
+    />
+
+</odoo>
